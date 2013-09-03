@@ -78,8 +78,7 @@ t4.KeyboardController = cc.Class.extend({
 	keyMap: {},
 	ctor: function(){
 		var tm = new t4.fsm.TransitionMap(t4.KeyboardTransitionMap);
-		this.fsm = new t4.fsm.Fsm();
-		this.fsm.init(tm);
+		this.fsm = new t4.fsm.Fsm(tm, new t4.fsm.Callback(this));
 	},
 
 	reset: function(){
@@ -107,34 +106,5 @@ t4.KeyboardController = cc.Class.extend({
 			var event = 'Release' + this.keyMap[keyCode];
 			this.fsm.response(event);
 		}
-	},
-
-	onStateBegin_Normal: function(){
-
-	},
-	onStateBegin_Left: function(){
-
-	},
-	onStateBegin_Right: function(){
-
-	},
-	onStateBegin_Up: function(){
-
-	},
-	onStateBegin_Down: function(){
-
-	},
-
-	onStateBegin_LeftUp: function(){
-
-	},
-	onStateBegin_RightUp: function(){
-
-	},
-	onStateBegin_LeftDown: function(){
-
-	},
-	onStateBegin_RightDown: function(){
-
 	},
 });
