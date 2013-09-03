@@ -41,6 +41,7 @@
             //add your own files in order here
             'src/fsm.js',
             'src/keyboardController.js',
+            'src/unit.js',
             'src/Map.js',
             'src/MushroomScene.js'
         ]
