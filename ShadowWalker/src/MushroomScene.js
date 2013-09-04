@@ -53,8 +53,12 @@ var MushroomSprite = cc.Sprite.extend({
         this._super();
 
         var aniFrame = [];
-        aniFrame.push(cc.SpriteFrame.create(s_shime, cc.rect(0,0,128,128)));
-        aniFrame.push(cc.SpriteFrame.create(s_shime2, cc.rect(0,0,128,128)));
+        cc.SpriteFrameCache.getInstance().addSpriteFrames('test.plist');
+
+        //aniFrame.push(cc.SpriteFrame.create(s_shime, cc.rect(0,0,128,128)));
+        //aniFrame.push(cc.SpriteFrame.create(s_shime2, cc.rect(0,0,128,128)));
+        aniFrame.push(cc.SpriteFrameCache.getInstance().getSpriteFrame(s_shime));
+        aniFrame.push(cc.SpriteFrameCache.getInstance().getSpriteFrame(s_shime2));
         this.initWithSpriteFrame(aniFrame[0]);
 
         var animation = cc.Animation.create(aniFrame, 0.3);
