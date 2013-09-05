@@ -42,6 +42,7 @@
             'src/fsm.js',
             'src/keyboardController.js',
             'src/unit.js',
+            'src/guardUnit.js',
             'src/Map.js',
             'src/MushroomScene.js'
         ]
