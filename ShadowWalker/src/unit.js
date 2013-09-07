@@ -66,12 +66,14 @@ t4.UnitBasicActionTransitionMap = {
 };
 
 
-t4.Unit = cc.Class.extend({
+t4.Unit = cc.Node.extend({
 	controller: null,
 	id: null, // unitid
 	actionFsm: null,
+	sprite: null,
 
 	ctor: function(){
+		this._super();
 		this.bindController(new t4.UnitController_RandomWalk());
 		var tm = new t4.fsm.TransitionMap(t4.UnitBasicActionTransitionMap);
 		var cb = new t4.fsm.Callback(this);
@@ -82,6 +84,13 @@ t4.Unit = cc.Class.extend({
 	bindController: function(controller){
 		this.controller = controller;
 		controller.bindUnit(this);
+	},
+	bindSprite: function(spriteFrameName){
+		if (this.sprite){
+			this.sprite.cleanup();
+			this.sprite = undefined;
+		}
+		this.sprite = cc.Sprite.createWithSpriteFrameName(spriteFrameName);
 	},
 	// operations
 	moveTo: function(pos){

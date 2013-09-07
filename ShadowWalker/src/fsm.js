@@ -81,7 +81,7 @@ t4.fsm.Callback = cc.Class.extend({
 		if (state in this.stateBeginCallback){
 			var t = this.stateBeginCallback;
 			for (var i = 0, l = t.length; i < l; i++){
-				t[i].apply(this.target);
+				t[i].apply(this.target, arguments);
 			}
 		}
 	},
@@ -89,7 +89,7 @@ t4.fsm.Callback = cc.Class.extend({
 		if (state in this.stateEndCallback){
 			var t = this.stateEndCallbacks;
 			for (var i = 0, l = t.length; i < l; i++){
-				t[i].apply(this.target);
+				t[i].apply(this.target, arguments);
 			}
 		}
 	},
@@ -99,7 +99,7 @@ t4.fsm.Callback = cc.Class.extend({
 			if (event in t){
 				t = event[t];
 				for (var i = 0, l = t.length; i < l; i++){
-					t[i].apply(this.target);
+					t[i].apply(this.target, arguments);
 				}
 			}
 		}
@@ -110,7 +110,7 @@ t4.fsm.Callback = cc.Class.extend({
 			if (event in t){
 				t = event[t];
 				for (var i = 0, l = t.length; i < l; i++){
-					t[i].apply(this.target);
+					t[i].apply(this.target, arguments);
 				}
 			}
 		}

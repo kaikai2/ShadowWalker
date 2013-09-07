@@ -51,34 +51,6 @@ var MyLayer = cc.Layer.extend({
 var MushroomSprite = cc.Sprite.extend({
     ctor: function () {
         this._super();
-
-        var aniFrame = [];
-        cc.SpriteFrameCache.getInstance().addSpriteFrames('test.plist');
-
-        //aniFrame.push(cc.SpriteFrame.create(s_shime, cc.rect(0,0,128,128)));
-        //aniFrame.push(cc.SpriteFrame.create(s_shime2, cc.rect(0,0,128,128)));
-        aniFrame.push(cc.SpriteFrameCache.getInstance().getSpriteFrame(s_shime));
-        aniFrame.push(cc.SpriteFrameCache.getInstance().getSpriteFrame(s_shime2));
-        this.initWithSpriteFrame(aniFrame[0]);
-
-        var animation = cc.Animation.create(aniFrame, 0.3);
-        var animate = cc.Animate.create(animation);
-
-        var seq = cc.Sequence.create(animate)
-        this.runAction(cc.RepeatForever.create(seq));
-
-        cc.Director.getInstance().getTouchDispatcher().addTargetedDelegate(this, 0, true);
-
-        this.kc = new t4.KeyboardController();
-        this.kc.bindKey(cc.KEY.a, t4.KeyDir.Left);
-        this.kc.bindKey(cc.KEY.s, t4.KeyDir.Down);
-        this.kc.bindKey(cc.KEY.d, t4.KeyDir.Right);
-        this.kc.bindKey(cc.KEY.w, t4.KeyDir.Up);
-
-        cc.Director.getInstance().getKeyboardDispatcher().addDelegate(this.kc);
-        this.kc.start();
-        this.scheduleUpdate();
-        this.speed = 100;
     },
     containsTouchLocation: function(touch){
         var getPoint = touch.getLocation();
@@ -97,41 +69,6 @@ var MushroomSprite = cc.Sprite.extend({
         var touchPoint = touch.getLocation();
         this.setPositionX(touchPoint.x);
     },
-    update: function(dt){
-        var pos = this.getPosition();
-        var dir = this.kc.get();
-        switch(dir){
-        case t4.ControlDir.Left:
-            pos.x -= dt * this.speed;
-            break;
-        case t4.ControlDir.Right:
-            pos.x += dt * this.speed;
-            break;
-        case t4.ControlDir.Up:
-            pos.y += dt * this.speed;
-            break;
-        case t4.ControlDir.Down:
-            pos.y -= dt * this.speed;
-            break;
-        case t4.ControlDir.LeftUp:
-            pos.x -= dt * this.speed;
-            pos.y += dt * this.speed;
-            break;
-        case t4.ControlDir.LeftDown:
-            pos.x -= dt * this.speed;
-            pos.y -= dt * this.speed;
-            break;
-        case t4.ControlDir.RightUp:
-            pos.x += dt * this.speed;
-            pos.y += dt * this.speed;
-            break;
-        case t4.ControlDir.RightDown:
-            pos.x += dt * this.speed;
-            pos.y -= dt * this.speed;
-            break;
-        }
-        this.setPosition(pos);
-    }
 });
 
 var g_GameZOrder = {bg: 0, ui: 1};
@@ -144,6 +81,8 @@ var MushroomScene = cc.Scene.extend({
         this.addChild(layer);
         layer.init();
 */
+        cc.SpriteFrameCache.getInstance().addSpriteFrames('test.plist');
+        cc.SpriteFrameCache.getInstance().addSpriteFrames('texture.plist');
         this.gameLayer = cc.Layer.create();
         this.addChild(this.gameLayer);
 
@@ -152,17 +91,16 @@ var MushroomScene = cc.Scene.extend({
         bg.setAnchorPoint(cc.p(0,0));
         bg.setPosition(cc.p(0,0));
 */
-        this.mushroom = new MushroomSprite();
-        this.mushroom.setAnchorPoint(cc.p(0.5, 0.25));
-        this.mushroom.setPosition(cc.p(240,120));
+        this.playerUnit = new sw.PlayerUnit();
+        
 /*
         var rotate = cc.RotateBy.create(1, 90);
         this.mushroom.runAction(cc.RepeatForever.create(rotate));*/
-        this.gameLayer.addChild(this.mushroom, g_GameZOrder.ui);
+        this.gameLayer.addChild(this.playerUnit, g_GameZOrder.ui);
 
         this.map = new sw.MapManager();
         for (var i = 0; i < 100; ++i){
-            this.map.add(new sw.MapObj());
+            this.map.add(sw.MapObj.create(sw.MapObjTypes.Block));
         }
         
         this.map.initScene(this.gameLayer);

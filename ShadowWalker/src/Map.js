@@ -21,9 +21,9 @@ sw.MapObj = cc.Class.extend({
 	sprite: null,
 	pos: null,
 	mapType: sw.MapObjTypes.None,
-	ctor: function(){
-		this.mapType = sw.MapObjTypes.Block;
-		this.sprite = cc.Sprite.create(s_groud1, cc.rect(0,0,10,10));
+	ctor: function(type){
+		this.mapType = type || sw.MapObjTypes.None;
+		this.sprite = cc.Sprite.createWithSpriteFrameName('BrickLargeSpecial0094_1_preview.png');
         this.sprite.setAnchorPoint(cc.p(0,0));
         this.sprite.setRotation(cc.RANDOM_0_1() * 360);
 		this.pos = cc.p( cc.RANDOM_0_1() * 1000,  cc.RANDOM_0_1() * 1000);
@@ -37,7 +37,7 @@ sw.MapObj = cc.Class.extend({
 });
 
 sw.MapObj.create = function(type){
-
+	return new sw.MapObj(type);
 };
 /*
 MapManager 是管理地图的容器
