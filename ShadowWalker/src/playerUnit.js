@@ -16,19 +16,20 @@ sw.PlayerUnit = t4.Unit.extend({
 			cc.SpriteFrameCache.getInstance().getSpriteFrame('shime20.png'),
 			cc.SpriteFrameCache.getInstance().getSpriteFrame('shime21.png'),
         ];
-        var animation = cc.Animation.create(aniFrame, 0.3);
+        var animation = cc.Animation.create(aniFrame, 0.1);
         var animate = cc.Animate.create(animation);
 
         var seq = cc.Sequence.create(animate)
-        var action = this.sprite.runAction(cc.RepeatForever.create(seq));
-        action.setTag(1);
+        this.moveAction = cc.RepeatForever.create(seq);
+        this.moveAction.setTag(1);
+        
         this.sprite.setAnchorPoint(cc.p(0.5, 0.25));
         this.sprite.setPosition(cc.p(240,120));
         this.addChild(this.sprite);
 
         //cc.Director.getInstance().getTouchDispatcher().addTargetedDelegate(this, 0, true);
 
-        this.kc = new t4.KeyboardController();
+        this.kc = new t4.KeyboardController(this);
         this.kc.bindKey(cc.KEY.a, t4.KeyDir.Left);
         this.kc.bindKey(cc.KEY.s, t4.KeyDir.Down);
         this.kc.bindKey(cc.KEY.d, t4.KeyDir.Right);
@@ -72,9 +73,27 @@ sw.PlayerUnit = t4.Unit.extend({
         this.setPosition(pos);
     },
     OnStateBegin: function(state){
-    	if (state == 'Walk'){
-    		var action = this.sprite.getActionByTag(1);
-    		action.stop();
+    	//var action = this.sprite.getActionByTag(1);
+    	switch(state){
+		case 'Walk':
+		 	this.sprite.runAction(this.moveAction);
+    		break;
+    	case 'Stay':
+			this.sprite.stopAction(this.moveAction);
+			break;
     	}
     },
+
+	onStartMove: function(state){
+		this.actionFsm.response('Move');
+	},
+	onStopMove: function(state){
+		this.actionFsm.response('Stand');
+	},
+	onTurnLeft: function(state){
+		this.sprite.runAction(cc.FlipX.create(false));
+	},
+	onTurnRight: function(state){
+		this.sprite.runAction(cc.FlipX.create(true));
+	},
 });

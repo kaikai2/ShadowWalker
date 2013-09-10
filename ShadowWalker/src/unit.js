@@ -76,8 +76,9 @@ t4.Unit = cc.Node.extend({
 		this._super();
 		this.bindController(new t4.UnitController_RandomWalk());
 		var tm = new t4.fsm.TransitionMap(t4.UnitBasicActionTransitionMap);
-		var cb = new t4.fsm.Callback(this);
-		this.actionFsm = new t4.fsm.Fsm(tm, cb);
+		this.cb = new t4.fsm.Callback(this);
+		this.actionFsm = new t4.fsm.Fsm(tm, this.cb);
+		this.actionFsm.start('Stay');
 	},
 
 	// method
