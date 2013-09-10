@@ -29,7 +29,7 @@ t4.fsm.Callback = cc.Class.extend({
 	stateBeginCallback: {},
 	stateEndCallback: {},
 	eventCallback: {},
-	transitonCallbak: {},
+	transitonCallback: {},
 
 	ctor: function(target){
 		this.target = target;
@@ -65,10 +65,10 @@ t4.fsm.Callback = cc.Class.extend({
 	},
 	registerTransition: function(state, event, fun){
 		var t;
-		if (state in this.transitonCallbak){
-			t = this.transitonCallbak[state];
+		if (state in this.transitonCallback){
+			t = this.transitonCallback[state];
 		}else{
-			this.transitonCallbak[state] = t = {};
+			this.transitonCallback[state] = t = {};
 		}
 		if (event in t){
 			t[event].push(fun);
@@ -79,7 +79,7 @@ t4.fsm.Callback = cc.Class.extend({
 
 	callStateBegin: function(state){
 		if (state in this.stateBeginCallback){
-			var t = this.stateBeginCallback;
+			var t = this.stateBeginCallback[state];
 			for (var i = 0, l = t.length; i < l; i++){
 				t[i].apply(this.target, arguments);
 			}
@@ -87,7 +87,7 @@ t4.fsm.Callback = cc.Class.extend({
 	},
 	callStateEnd: function(state){
 		if (state in this.stateEndCallback){
-			var t = this.stateEndCallbacks;
+			var t = this.stateEndCallback[state];
 			for (var i = 0, l = t.length; i < l; i++){
 				t[i].apply(this.target, arguments);
 			}
@@ -95,7 +95,7 @@ t4.fsm.Callback = cc.Class.extend({
 	},
 	callEvent: function(state, event){
 		if (state in this.eventCallback){
-			var t = this.eventCallback;
+			var t = this.eventCallback[state];
 			if (event in t){
 				t = event[t];
 				for (var i = 0, l = t.length; i < l; i++){
@@ -106,7 +106,7 @@ t4.fsm.Callback = cc.Class.extend({
 	},
 	callTransition: function(state, event){
 		if (state in this.stateEndCallback){
-			var t = this.stateEndCallbacks;
+			var t = this.stateEndCallback[state];
 			if (event in t){
 				t = event[t];
 				for (var i = 0, l = t.length; i < l; i++){
