@@ -105,13 +105,13 @@ t4.KeyboardController = cc.Class.extend({
 		return this.fsm.getCurrentState();
 	},
 
+	// keyboard dispatcher
 	onKeyDown: function(keyCode){
 		if (keyCode in this.keyMap){
 			var event = 'Press' + this.keyMap[keyCode];
 			this.fsm.response(event);
 		}
 	},
-
 	onKeyUp: function(keyCode){
 		if (keyCode in this.keyMap){
 			var event = 'Release' + this.keyMap[keyCode];
@@ -119,24 +119,22 @@ t4.KeyboardController = cc.Class.extend({
 		}
 	},
 
-	onStartMove: function(state){
-		if (this.sink && 'onStartMove' in this.sink){
-			this.sink.onStartMove.call(this.sink, state);
+	// fsm callback
+	_callSink: function(func, state){
+		if (this.sink && func in this.sink){
+			this.sink[func].call(this.sink, state);
 		}
+	},
+	onStartMove: function(state){
+		this._callSink('onStartMove', state);
 	},
 	onStopMove: function(state){
-		if (this.sink && 'onStopMove' in this.sink){
-			this.sink.onStopMove.call(this.sink, state);
-		}
+		this._callSink('onStopMove', state);
 	},
 	onTurnLeft: function(state){
-		if (this.sink && 'onTurnLeft' in this.sink){
-			this.sink.onTurnLeft.call(this.sink, state);
-		}
+		this._callSink('onTurnLeft', state);
 	},
 	onTurnRight: function(state){
-		if (this.sink && 'onTurnRight' in this.sink){
-			this.sink.onTurnRight.call(this.sink, state);
-		}
+		this._callSink('onTurnRight', state);
 	},
 });

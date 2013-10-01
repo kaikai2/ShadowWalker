@@ -26,11 +26,11 @@ sw.MapObj = cc.Class.extend({
 		this.sprite = cc.Sprite.createWithSpriteFrameName('BrickLargeSpecial0094_1_preview.png');
         this.sprite.setAnchorPoint(cc.p(0,0));
         this.sprite.setRotation(cc.RANDOM_0_1() * 360);
-		this.pos = cc.p( cc.RANDOM_0_1() * 1000,  cc.RANDOM_0_1() * 1000);
+		this.pos = cc.p( cc.RANDOM_0_1() * 600,  cc.RANDOM_0_1() * 400);
 	},
 
 	addTo: function(ccLayer){
-		ccLayer.addChild(this.sprite);
+		ccLayer.addChild(this.sprite, 1);
 		this.sprite.setPosition(this.pos);
 	},
 

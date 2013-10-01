@@ -88,10 +88,10 @@ t4.Unit = cc.Node.extend({
 	},
 	bindSprite: function(spriteFrameName){
 		if (this.sprite){
-			this.sprite.cleanup();
-			this.sprite = undefined;
+			this.removeChild(this.sprite, true);
 		}
 		this.sprite = cc.Sprite.createWithSpriteFrameName(spriteFrameName);
+        this.addChild(this.sprite);
 	},
 	// operations
 	moveTo: function(pos){

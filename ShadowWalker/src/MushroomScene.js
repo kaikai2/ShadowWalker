@@ -93,6 +93,7 @@ var MushroomScene = cc.Scene.extend({
 */
         this.playerUnit = new sw.PlayerUnit();
         
+        this.playerUnit.setPosition(cc.p(240,120));
 /*
         var rotate = cc.RotateBy.create(1, 90);
         this.mushroom.runAction(cc.RepeatForever.create(rotate));*/

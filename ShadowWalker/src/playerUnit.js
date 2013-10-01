@@ -5,7 +5,68 @@
 */
 
 var sw = sw || {};
+sw.MovementDriverComponent = cc.Component.extend({
+    ctor: function(){
+        this._super();
+        this._name = "MovementDriverComponent";
+    },
+    onEnter: function(){
+        var owner = this.getOwner();
+        if (owner){
+            owner.getScheduler().scheduleUpdateForTarget(this, 0, !this.isEnabled());
+        }
+    },
+    onExit: function(){
+        var owner = this.getOwner();
+        if (owner){
+            owner.getScheduler().unscheduleUpdateForTarget(this);
+        }
+    },
+    setEnabled: function(enable){
+        this._super(enable);
+        var owner = this.getOwner();
+        if (owner){
+            if (this.isEnabled()){
+                owner.getScheduler().resumeTarget(this);
+            }else{
+                owner.getScheduler().pauseTarget(this);
+            }
+        }
+    },
+    update: function(dt){
+        var owner = this.getOwner();
+        if (owner){
 
+            var pos = owner.getPosition();
+            var dir = owner.kc.get();
+            switch(dir){
+            case t4.ControlDir.Left:
+            case t4.ControlDir.LeftUp:
+            case t4.ControlDir.LeftDown:
+                pos.x -= dt * owner.speed;
+                break;
+            case t4.ControlDir.Right:
+            case t4.ControlDir.RightUp:
+            case t4.ControlDir.RightDown:
+                pos.x += dt * owner.speed;
+                break;
+            }
+            switch(dir){
+            case t4.ControlDir.Down:
+            case t4.ControlDir.RightDown:
+            case t4.ControlDir.LeftDown:
+                pos.y -= dt * owner.speed;
+                break;
+            case t4.ControlDir.Up:
+            case t4.ControlDir.LeftUp:
+            case t4.ControlDir.RightUp:
+                pos.y += dt * owner.speed;
+                break;
+            }
+            owner.setPosition(pos);
+        }
+    },
+});
 sw.PlayerUnit = t4.Unit.extend({
 	ctor: function() {
 		this._super();
@@ -19,15 +80,9 @@ sw.PlayerUnit = t4.Unit.extend({
         var animation = cc.Animation.create(aniFrame, 0.1);
         var animate = cc.Animate.create(animation);
 
-        var seq = cc.Sequence.create(animate)
-        this.moveAction = cc.RepeatForever.create(seq);
-        this.moveAction.setTag(1);
+        this.moveAction = cc.RepeatForever.create(cc.Sequence.create(animate));
         
         this.sprite.setAnchorPoint(cc.p(0.5, 0.25));
-        this.sprite.setPosition(cc.p(240,120));
-        this.addChild(this.sprite);
-
-        //cc.Director.getInstance().getTouchDispatcher().addTargetedDelegate(this, 0, true);
 
         this.kc = new t4.KeyboardController(this);
         this.kc.bindKey(cc.KEY.a, t4.KeyDir.Left);
@@ -37,49 +92,23 @@ sw.PlayerUnit = t4.Unit.extend({
 
         cc.Director.getInstance().getKeyboardDispatcher().addDelegate(this.kc);
         this.kc.start();
-        this.scheduleUpdate();
         this.speed = 100;
 
+        this.movement = new sw.MovementDriverComponent();
+        this.addComponent(this.movement);
         this.cb.registerBegin('Walk', this.OnStateBegin);
         this.cb.registerBegin('Stay', this.OnStateBegin);
 	},
-    update: function(dt){
-        var pos = this.getPosition();
-        var dir = this.kc.get();
-        switch(dir){
-        case t4.ControlDir.Left:
-        case t4.ControlDir.LeftUp:
-        case t4.ControlDir.LeftDown:
-            pos.x -= dt * this.speed;
-            break;
-        case t4.ControlDir.Right:
-        case t4.ControlDir.RightUp:
-        case t4.ControlDir.RightDown:
-            pos.x += dt * this.speed;
-            break;
-        }
-        switch(dir){
-        case t4.ControlDir.Down:
-        case t4.ControlDir.RightDown:
-        case t4.ControlDir.LeftDown:
-            pos.y -= dt * this.speed;
-            break;
-        case t4.ControlDir.Up:
-        case t4.ControlDir.LeftUp:
-        case t4.ControlDir.RightUp:
-            pos.y += dt * this.speed;
-            break;
-        }
-        this.setPosition(pos);
-    },
     OnStateBegin: function(state){
     	//var action = this.sprite.getActionByTag(1);
     	switch(state){
 		case 'Walk':
+            this.movement.setEnabled(true);
 		 	this.sprite.runAction(this.moveAction);
     		break;
     	case 'Stay':
 			this.sprite.stopAction(this.moveAction);
+            this.movement.setEnabled(false);
 			break;
     	}
     },
